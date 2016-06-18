@@ -1,0 +1,165 @@
+var _user$project$Main$passwordValidation = function (pw) {
+	var contains_fn = function (_p0) {
+		var _p1 = _p0;
+		return {
+			ctor: '_Tuple2',
+			_0: function (_p2) {
+				return _elm_lang$core$Basics$not(
+					A2(
+						_elm_lang$core$Regex$contains,
+						_elm_lang$core$Regex$regex(_p1._0),
+						_p2));
+			},
+			_1: A2(_elm_lang$core$Basics_ops['++'], 'must contain ', _p1._1)
+		};
+	};
+	var missing = A2(
+		_elm_lang$core$List$map,
+		contains_fn,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{ctor: '_Tuple2', _0: '\\d', _1: 'digits'},
+				{ctor: '_Tuple2', _0: '[a-z]+', _1: 'lower case characters'},
+				{ctor: '_Tuple2', _0: '[A-Z]+', _1: 'upper case characters'}
+			]));
+	var preds = A2(
+		_elm_lang$core$Basics_ops['++'],
+		missing,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{
+				ctor: '_Tuple2',
+				_0: function (_p3) {
+					return A2(
+						F2(
+							function (x, y) {
+								return _elm_lang$core$Native_Utils.cmp(x, y) > 0;
+							}),
+						4,
+						_elm_lang$core$String$length(_p3));
+				},
+				_1: 'too short'
+			}
+			]));
+	var _p5 = _elm_lang$core$List$head(
+		A2(
+			_elm_lang$core$List$filter,
+			function (_p4) {
+				return A2(
+					F2(
+						function (x, y) {
+							return y(x);
+						}),
+					pw,
+					_elm_lang$core$Basics$fst(_p4));
+			},
+			preds));
+	if (_p5.ctor === 'Nothing') {
+		return _elm_lang$core$Maybe$Nothing;
+	} else {
+		return _elm_lang$core$Maybe$Just(
+			A2(_elm_lang$core$Basics_ops['++'], 'Password ', _p5._0._1));
+	}
+};
+var _user$project$Main$viewValidation = function (model) {
+	var _p6 = function () {
+		var _p7 = _user$project$Main$passwordValidation(model.password);
+		if (_p7.ctor === 'Just') {
+			return {ctor: '_Tuple2', _0: 'red', _1: _p7._0};
+		} else {
+			return (!_elm_lang$core$Native_Utils.eq(model.password, model.passwordAgain)) ? {ctor: '_Tuple2', _0: 'red', _1: 'Passwords do not match!'} : {ctor: '_Tuple2', _0: 'green', _1: 'OK'};
+		}
+	}();
+	var color = _p6._0;
+	var message = _p6._1;
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$style(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{ctor: '_Tuple2', _0: 'color', _1: color}
+					]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(message)
+			]));
+};
+var _user$project$Main$update = F2(
+	function (action, model) {
+		var _p8 = action;
+		switch (_p8.ctor) {
+			case 'Name':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{name: _p8._0});
+			case 'Password':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{password: _p8._0});
+			default:
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{passwordAgain: _p8._0});
+		}
+	});
+var _user$project$Main$Model = F3(
+	function (a, b, c) {
+		return {name: a, password: b, passwordAgain: c};
+	});
+var _user$project$Main$model = A3(_user$project$Main$Model, '', '', '');
+var _user$project$Main$PasswordAgain = function (a) {
+	return {ctor: 'PasswordAgain', _0: a};
+};
+var _user$project$Main$Password = function (a) {
+	return {ctor: 'Password', _0: a};
+};
+var _user$project$Main$Name = function (a) {
+	return {ctor: 'Name', _0: a};
+};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('text'),
+						_elm_lang$html$Html_Attributes$placeholder('Name'),
+						_elm_lang$html$Html_Events$onInput(_user$project$Main$Name)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('password'),
+						_elm_lang$html$Html_Attributes$placeholder('Password'),
+						_elm_lang$html$Html_Events$onInput(_user$project$Main$Password)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('password'),
+						_elm_lang$html$Html_Attributes$placeholder('Re-enter Password'),
+						_elm_lang$html$Html_Events$onInput(_user$project$Main$PasswordAgain)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				_user$project$Main$viewValidation(model)
+			]));
+};
+var _user$project$Main$main = {
+	main: _elm_lang$html$Html_App$beginnerProgram(
+		{model: _user$project$Main$model, view: _user$project$Main$view, update: _user$project$Main$update})
+};
