@@ -81,32 +81,44 @@ viewValidation model =
     in
         div [ style [("color", color)] ] [ text message ]
 
-
-                    {-
-passwordValidation : String -> String -> Maybe String
-passwordValidation what pw =
-    if length pw < 4 then
-        Just (what ++ " too short")
-    else
-        let
-            missing (r, expected) = if contains (regex r) pw then
-                                        Nothing
-                                    else
-                                        Just (what ++ " must contain " ++ expected)
-        in
-            filterMap missing
-                [("\\d", "digits"), ("[a-z]+", "lower case characters"), ("[A-Z]+", "upper case characters")]
-                    |> head
+{-
+ageValidation: String -> Maybe String
+ageValidation: age = if contains (regex "^\\d+") age
+Just "must be a number"
+                     else
 -}
 
+validateBool : (String -> Bool) -> String -> MayBe String
+validateBool pred, msg, val
+    if pred val then
+        Nothing
+    else
+        Just msg
+
+validateRegex : String -> String -> String -> Maybe String
+validateRegex regex_s, msg, val = validateBool contains (regex regex_s), msg, val
+
+validateLength : (Int -> Bool), String, String -> Maybe String
+validateLength cmp, msg, val =
+    let
+        pred : String -> Bool
+        pred val = cmp (length val)
+    in
+        validateBool pred, msg, val
+
+validateUpper = validateRegex "[A-Z]+" "must contain upper case characters"
+validateLower = validateRegex "[a-z]+" "must contain lower case characters"
+validateInt = validateRegex "\\d+" "must contain number"
+validateMax max, val = validateLength (>=)
 
 passwordValidation : String -> Maybe String
 passwordValidation pw =
     let
-        contains_fn (r, expected) = ((contains (regex r)) >> not, "must contain " ++ expected)
-        missing = map contains_fn
+        contains_ (r, expected) = ((contains (regex r)) >> not, "must contain " ++ expected)
+        contains = map contains_
                   [("\\d", "digits"), ("[a-z]+", "lower case characters"), ("[A-Z]+", "upper case characters")]
-        preds = missing ++ [(length >> (>) 4, "too short")]
+        too_short = (length >> (>) 4, "too short")
+        preds = too_short :: missing
     in
         case head (filter (fst >> (|>) pw) preds) of
             Nothing -> Nothing

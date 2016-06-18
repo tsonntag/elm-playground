@@ -1,0 +1,26 @@
+var _user$project$Validate$validate = F3(
+	function (pred, msg, val) {
+		return pred(val) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(msg);
+	});
+var _user$project$Validate$validateRegex = F3(
+	function (regex_s, msg, val) {
+		var pred = function (val) {
+			return A2(
+				_elm_lang$core$Regex$contains,
+				_elm_lang$core$Regex$regex(regex_s),
+				val);
+		};
+		return A3(_user$project$Validate$validate, pred, msg, val);
+	});
+var _user$project$Validate$validateUpperCase = A2(_user$project$Validate$validateRegex, '[A-Z]+', 'must contain upper case characters');
+var _user$project$Validate$validateLowerCase = A2(_user$project$Validate$validateRegex, '[a-z]+', 'must contain lower case characters');
+var _user$project$Validate$validateInt = A2(_user$project$Validate$validateRegex, '\\d+', 'must contain number');
+var _user$project$Validate$validateLength = F3(
+	function (len, msg, val) {
+		var pred = function (val) {
+			return _elm_lang$core$Native_Utils.eq(
+				_elm_lang$core$String$length(val),
+				len);
+		};
+		return A3(_user$project$Validate$validate, pred, msg, val);
+	});

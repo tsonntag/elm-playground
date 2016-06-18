@@ -1,46 +1,41 @@
 var _user$project$Main$passwordValidation = function (pw) {
-	var contains_fn = function (_p0) {
-		var _p1 = _p0;
+	var too_short = {
+		ctor: '_Tuple2',
+		_0: function (_p0) {
+			return A2(
+				F2(
+					function (x, y) {
+						return _elm_lang$core$Native_Utils.cmp(x, y) > 0;
+					}),
+				4,
+				_elm_lang$core$String$length(_p0));
+		},
+		_1: 'too short'
+	};
+	var contains_ = function (_p1) {
+		var _p2 = _p1;
 		return {
 			ctor: '_Tuple2',
-			_0: function (_p2) {
+			_0: function (_p3) {
 				return _elm_lang$core$Basics$not(
 					A2(
 						_elm_lang$core$Regex$contains,
-						_elm_lang$core$Regex$regex(_p1._0),
-						_p2));
+						_elm_lang$core$Regex$regex(_p2._0),
+						_p3));
 			},
-			_1: A2(_elm_lang$core$Basics_ops['++'], 'must contain ', _p1._1)
+			_1: A2(_elm_lang$core$Basics_ops['++'], 'must contain ', _p2._1)
 		};
 	};
 	var missing = A2(
 		_elm_lang$core$List$map,
-		contains_fn,
+		contains_,
 		_elm_lang$core$Native_List.fromArray(
 			[
 				{ctor: '_Tuple2', _0: '\\d', _1: 'digits'},
 				{ctor: '_Tuple2', _0: '[a-z]+', _1: 'lower case characters'},
 				{ctor: '_Tuple2', _0: '[A-Z]+', _1: 'upper case characters'}
 			]));
-	var preds = A2(
-		_elm_lang$core$Basics_ops['++'],
-		missing,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				{
-				ctor: '_Tuple2',
-				_0: function (_p3) {
-					return A2(
-						F2(
-							function (x, y) {
-								return _elm_lang$core$Native_Utils.cmp(x, y) > 0;
-							}),
-						4,
-						_elm_lang$core$String$length(_p3));
-				},
-				_1: 'too short'
-			}
-			]));
+	var preds = A2(_elm_lang$core$List_ops['::'], too_short, missing);
 	var _p5 = _elm_lang$core$List$head(
 		A2(
 			_elm_lang$core$List$filter,
